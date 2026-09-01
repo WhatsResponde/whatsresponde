@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ayuda y Soporte — WhatsReply</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #FFFDFB;
+    --bg-soft: #F6F1F8;
+    --bg-soft-2: #EFFAF4;
+    --ink: #1B1420;
+    --ink-soft: #6E6376;
+    --purple: #7B2D8E;
+    --purple-dark: #4F1E60;
+    --purple-tint: #F1E1F6;
+    --green: #00A651;
+    --green-dark: #00803F;
+    --green-tint: #DFF6E9;
+    --border: #EAE1EC;
+    --white: #FFFFFF;
+    --shadow: 0 20px 45px -20px rgba(75, 24, 92, 0.18);
+    --radius-lg: 28px;
+    --radius-md: 20px;
+    --radius-sm: 12px;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    font-family:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{ color:inherit; text-decoration:none; }
+
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 32px; }
+  @media (max-width:640px){ .wrap{ padding:0 20px; } }
+
+  .reveal{ opacity:0; transform:translateY(28px); transition:opacity .8s cubic-bezier(.16,.8,.28,1), transform .8s cubic-bezier(.16,.8,.28,1); }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+  .reveal-delay-1{ transition-delay:.08s; }
+  .reveal-delay-2{ transition-delay:.16s; }
+
+  /* ============ NAVBAR ============ */
+  .navbar{
+    position:fixed; top:0; left:0; right:0; z-index:1000;
+    padding:22px 0;
+    transition:padding .35s ease, box-shadow .35s ease, background .35s ease;
+  }
+  .navbar.scrolled{
+    padding:14px 0;
+    background:rgba(255,253,251,0.85);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    box-shadow:0 1px 0 var(--border);
+  }
+  .nav-inner{
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; text-decoration:none; }
+  .brand-icon{ width:34px; height:34px; border-radius:10px; overflow:hidden; flex:none; background:var(--purple); display:flex; align-items:center; justify-content:center; }
+  .brand-icon svg{ width:20px; height:20px; }
+  .brand-text{ font-weight:700; font-size:1.05rem; color:var(--ink); letter-spacing:-0.01em; }
+  .nav-links{ display:flex; align-items:center; gap:2.4rem; }
+  .nav-link{ text-decoration:none; color:var(--ink-soft); font-weight:500; font-size:.92rem; transition:color .25s; }
+  .nav-link:hover{ color:var(--purple); }
+  .nav-link.active{ color:var(--purple); background:var(--purple-tint); padding:.5rem 1rem; border-radius:8px; }
+  .nav-cta{
+    padding:.65rem 1.4rem; border-radius:100px; background:var(--purple); color:var(--white);
+    font-weight:600; font-size:.85rem; text-decoration:none; transition:all .3s;
+    box-shadow:0 8px 20px -8px rgba(123,45,142,0.55);
+  }
+  .nav-cta:hover{ background:var(--green); box-shadow:0 8px 20px -8px rgba(0,166,81,0.55); transform:translateY(-1px); }
+  @media (max-width:809px){
+    .nav-links .nav-link{ display:none; }
+    .nav-links .nav-link.active{ display:inline-flex; }
+  }
+
+  /* ============ PAGE HEADER ============ */
+  .page-header{
+    padding:140px 0 60px;
+    position:relative;
+    overflow:hidden;
+    background:linear-gradient(180deg, var(--purple-tint) 0%, var(--bg) 100%);
+  }
+  .page-header::before{
+    content:''; position:absolute; top:-120px; right:-100px; width:400px; height:400px;
+    background:radial-gradient(circle, var(--purple-tint) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .page-header::after{
+    content:''; position:absolute; bottom:-180px; left:-120px; width:360px; height:360px;
+    background:radial-gradient(circle, var(--green-tint) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .page-header-inner{ position:relative; z-index:1; }
+  .page-header h1{ font-size:2.8rem; font-weight:800; line-height:1.1; letter-spacing:-0.02em; margin-bottom:.6rem; }
+  .page-header p{ color:var(--ink-soft); font-size:1.05rem; max-width:520px; }
+  @media (max-width:640px){ .page-header h1{ font-size:2rem; } }
+
+  .breadcrumb{ display:flex; align-items:center; gap:.5rem; margin-bottom:1.2rem; font-size:.85rem; color:var(--ink-soft); }
+  .breadcrumb a{ color:var(--purple); font-weight:500; transition:opacity .2s; }
+  .breadcrumb a:hover{ opacity:.7; }
+  .breadcrumb svg{ width:14px; height:14px; opacity:.5; }
+
+  /* ============ CONTENT ============ */
+  .content-section{ padding:60px 0 100px; }
+  .content-grid{ display:grid; grid-template-columns:280px 1fr; gap:48px; }
+  @media (max-width:900px){ .content-grid{ grid-template-columns:1fr; } }
+
+  /* Sidebar */
+  .sidebar{ position:sticky; top:100px; align-self:start; }
+  @media (max-width:900px){ .sidebar{ display:none; } }
+  .sidebar-title{ font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-soft); margin-bottom:1rem; }
+  .sidebar-nav{ display:flex; flex-direction:column; gap:.25rem; }
+  .sidebar-link{
+    padding:.55rem .9rem; border-radius:10px; font-size:.9rem; font-weight:500;
+    color:var(--ink-soft); transition:all .2s;
+  }
+  .sidebar-link:hover{ color:var(--purple); background:var(--purple-tint); }
+  .sidebar-link.active{ color:var(--purple); background:var(--purple-tint); font-weight:600; }
+
+  /* Main content */
+  .main-content{ max-width:720px; }
+  .main-content h2{
+    font-size:1.5rem; font-weight:700; color:var(--ink); margin:2.5rem 0 .8rem;
+    padding-bottom:.5rem; border-bottom:1px solid var(--border);
+  }
+  .main-content h2:first-child{ margin-top:0; }
+  .main-content h3{
+    font-size:1.1rem; font-weight:700; color:var(--ink); margin:1.8rem 0 .6rem;
+  }
+  .main-content p{ color:var(--ink-soft); margin-bottom:1rem; font-size:.95rem; line-height:1.7; }
+  .main-content ol, .main-content ul{ margin-bottom:1.2rem; padding-left:1.2rem; }
+  .main-content li{ color:var(--ink-soft); margin-bottom:.5rem; font-size:.95rem; line-height:1.6; }
+  .main-content ul{ list-style:none; padding:0; }
+  .main-content ul li{ padding-left:1.5rem; position:relative; }
+  .main-content ul li::before{
+    content:''; position:absolute; left:0; top:.65rem; width:6px; height:6px;
+    background:var(--green); border-radius:50%;
+  }
+  .main-content a{ color:var(--purple); font-weight:500; border-bottom:1px solid transparent; transition:border-color .2s; }
+  .main-content a:hover{ border-bottom-color:var(--purple); }
+
+  /* Cards */
+  .info-card{
+    background:var(--white); border:1px solid var(--border); border-radius:var(--radius-md);
+    padding:1.5rem; margin:1.2rem 0; box-shadow:var(--shadow);
+  }
+  .info-card-title{ font-weight:700; font-size:1rem; margin-bottom:.4rem; display:flex; align-items:center; gap:.5rem; }
+  .info-card-title svg{ width:18px; height:18px; color:var(--purple); }
+  .info-card p{ margin:0; }
+
+  .video-placeholder{
+    background:linear-gradient(135deg, var(--purple-tint), var(--green-tint));
+    border-radius:var(--radius-sm); padding:2.5rem; text-align:center; margin:1rem 0 1.5rem;
+    border:1px dashed var(--border); color:var(--purple);
+  }
+  .video-placeholder svg{ width:40px; height:40px; opacity:.5; margin-bottom:.5rem; }
+  .video-placeholder span{ font-size:.85rem; color:var(--ink-soft); }
+
+  /* FAQ */
+  .faq-item{ border-bottom:1px solid var(--border); padding:1.2rem 0; }
+  .faq-item h4{ font-size:1rem; font-weight:700; color:var(--ink); margin-bottom:.4rem; }
+  .faq-item p{ margin:0; }
+
+  /* ============ CTA BANNER ============ */
+  .cta-card{
+    background:linear-gradient(135deg, var(--purple-dark), var(--purple));
+    border-radius:var(--radius-lg); padding:60px 40px; text-align:center; color:var(--white);
+    position:relative; overflow:hidden; margin-top:60px;
+  }
+  .cta-card::before{
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(circle at 80% 20%, rgba(0,166,81,.35), transparent 55%);
+  }
+  .cta-card > *{ position:relative; }
+  .cta-card h2{ color:var(--white); font-size:2rem; margin-bottom:.6rem; font-weight:800; }
+  .cta-card p{ color:rgba(255,255,255,.78); margin-bottom:1.5rem; font-size:1rem; }
+  .btn-cta-light{
+    display:inline-flex; align-items:center; gap:.6rem; background:var(--white); color:var(--purple-dark);
+    padding:.85rem 1.7rem; border-radius:100px; text-decoration:none; font-weight:700; font-size:.9rem;
+    transition:all .3s;
+  }
+  .btn-cta-light:hover{ background:var(--green); color:var(--white); transform:translateY(-2px); }
+
+  /* ============ FOOTER ============ */
+  .footer{ padding:52px 0; border-top:1px solid var(--border); margin-top:0; }
+  .footer-inner{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:20px; }
+  .footer-brand{ display:flex; align-items:center; gap:10px; }
+  .footer-brand .f-icon{ width:28px; height:28px; border-radius:8px; background:var(--purple); display:flex; align-items:center; justify-content:center; }
+  .footer-brand .f-icon svg{ width:16px; height:16px; }
+  .footer-brand span{ font-weight:700; font-size:.95rem; }
+  .footer-links{ display:flex; gap:1.8rem; }
+  .footer-links a{ text-decoration:none; color:var(--ink-soft); font-size:.88rem; transition:color .25s; }
+  .footer-links a:hover{ color:var(--purple); }
+  .footer-copy{ color:var(--ink-soft); font-size:.82rem; }
+</style>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <div class="wrap nav-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 11L12 14L22 4" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M21 12V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="brand-text">WhatsReply</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html#features" class="nav-link">Características</a>
+      <a href="index.html#screenshots" class="nav-link">Galería</a>
+      <a href="index.html#help" class="nav-link">Cómo funciona</a>
+      <a href="ayuda.html" class="nav-link active">Ayuda</a>
+      <a href="privacidad.html" class="nav-link">Privacidad</a>
+    </div>
+    <a href="index.html#download" class="nav-cta">Descargar</a>
+  </div>
+</nav>
+
+<!-- ===== PAGE HEADER ===== -->
+<header class="page-header">
+  <div class="wrap page-header-inner reveal">
+    <div class="breadcrumb">
+      <a href="index.html">Inicio</a>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      <span>Ayuda</span>
+    </div>
+    <h1>Centro de Ayuda</h1>
+    <p>Guías paso a paso, solución de problemas y respuestas a las preguntas más frecuentes sobre WhatsReply.</p>
+  </div>
+</header>
+
+<!-- ===== CONTENT ===== -->
+<section class="content-section">
+  <div class="wrap content-grid">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-title">Contenido</div>
+      <nav class="sidebar-nav">
+        <a href="#primeros-pasos" class="sidebar-link active">Primeros pasos</a>
+        <a href="#bateria" class="sidebar-link">Optimización de batería</a>
+        <a href="#flujo" class="sidebar-link">Flujo de respuestas</a>
+        <a href="#alertas" class="sidebar-link">Alertas mágicas</a>
+        <a href="#faq" class="sidebar-link">Preguntas frecuentes</a>
+        <a href="#contacto" class="sidebar-link">Contacto</a>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <div class="main-content reveal">
+
+      <h2 id="primeros-pasos">Primeros pasos</h2>
+      <ol>
+        <li>Abre la App y activa el switch <strong>"Activar bot de respuestas"</strong> en la pantalla de Inicio.</li>
+        <li>Concede el permiso de <strong>Acceso a Notificaciones</strong> cuando la App te lo solicite (es indispensable para que funcione).</li>
+        <li>Ve a la sección <strong>"Flujo de respuestas"</strong> y configura tu menú de bienvenida y opciones.</li>
+        <li>Prueba tu configuración en el <strong>Simulador</strong> incluido en la App antes de usarlo con clientes reales.</li>
+      </ol>
+
+      <div class="info-card">
+        <div class="info-card-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Consejo rápido
+        </div>
+        <p>Si es la primera vez que usas la app, te recomendamos empezar con un flujo simple de 2 o 3 opciones para familiarizarte antes de crear menús más complejos.</p>
+      </div>
+
+      <h2 id="bateria">El bot no está respondiendo — solución de batería por fabricante</h2>
+      <p>Algunos fabricantes (Xiaomi, Huawei/Honor, Samsung) tienen sistemas de ahorro de batería agresivos que pueden detener la App en segundo plano. Sigue estos pasos según tu dispositivo:</p>
+
+      <h3>Xiaomi / MIUI</h3>
+      <ol>
+        <li>Ve a <strong>Ajustes</strong> → <strong>Batería</strong>.</li>
+        <li>Busca <strong>Inicio automático</strong> (o "Inicio de apps").</li>
+        <li>Busca <strong>WhatsReply</strong> en la lista y activa el interruptor.</li>
+      </ol>
+      <div class="video-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg><br>
+        <span>[Espacio reservado para video embebido de YouTube: Tutorial Xiaomi]</span>
+      </div>
+
+      <h3>Huawei / Honor</h3>
+      <ol>
+        <li>Ve a <strong>Ajustes</strong> → <strong>Batería</strong> → <strong>Inicio de apps</strong>.</li>
+        <li>Busca <strong>WhatsReply</strong> y desactiva la gestión automática.</li>
+        <li>Aparecerán 3 opciones (Inicio automático, Inicio secundario, Ejecutar en segundo plano). <strong>Actívalas manualmente las 3</strong>.</li>
+      </ol>
+      <div class="video-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg><br>
+        <span>[Espacio reservado para video embebido de YouTube: Tutorial Huawei/Honor]</span>
+      </div>
+
+      <h3>Samsung</h3>
+      <ol>
+        <li>Ve a <strong>Ajustes</strong> → <strong>Cuidado del dispositivo</strong> → <strong>Batería</strong>.</li>
+        <li>Toca en <strong>Apps que no se optimizan</strong> (o "Límites de uso en segundo plano").</li>
+        <li>Toca el signo <strong>+</strong> o "Agregar apps", busca <strong>WhatsReply</strong> y agrégala a la lista de excepciones.</li>
+      </ol>
+      <div class="video-placeholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg><br>
+        <span>[Espacio reservado para video embebido de YouTube: Tutorial Samsung]</span>
+      </div>
+
+      <h2 id="flujo">Cómo funciona el flujo de respuestas</h2>
+      <p>Crear un flujo es como armar un menú de opciones sencillo:</p>
+      <ul>
+        <li><strong>Mensaje de bienvenida:</strong> Es el primer texto que la App enviará automáticamente cuando llegue un mensaje nuevo.</li>
+        <li><strong>Opciones numeradas:</strong> Puedes agregar respuestas predefinidas asociadas a números (ej: "1. Horarios", "2. Precios"). Cuando el cliente responda con ese número, la App enviará la respuesta asociada.</li>
+        <li><strong>Menú anterior / principal:</strong> Si el cliente escribe algo que no coincide con una opción, o si tú lo configuras, la App puede reiniciar el flujo y volver a mostrar el menú principal automáticamente.</li>
+      </ul>
+
+      <h2 id="alertas">Alertas mágicas</h2>
+      <p>Las "Alertas mágicas" son palabras clave que tú defines (por ejemplo: "URGENTE", "NUEVA ORDEN", "PAGO"). Cuando la App detecta una de estas palabras en una notificación entrante:</p>
+      <ul>
+        <li>Reproduce un <strong>sonido personalizado</strong> (que puedes elegir en la configuración) para avisarte inmediatamente.</li>
+        <li>Envía una respuesta automática inmediata, sin seguir el flujo conversacional normal.</li>
+      </ul>
+      <p>Es ideal para no perder de vista mensajes críticos de clientes o proveedores.</p>
+
+      <h2 id="faq">Preguntas frecuentes</h2>
+
+      <div class="faq-item">
+        <h4>¿WhatsReply puede hacer que me bloqueen de WhatsApp?</h4>
+        <p>El uso de automatización no oficial conlleva riesgos. Te recomendamos leer detenidamente la <strong>Sección 8</strong> de nuestra <a href="privacidad.html">Política de Privacidad</a>, donde explicamos los Términos de Servicio de Meta y las mejores prácticas para mitigar este riesgo (como usar un número secundario).</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>¿Mis mensajes se envían a algún servidor?</h4>
+        <p><strong>No.</strong> Todo el procesamiento, la lectura de notificaciones y el almacenamiento de tu configuración ocurren exclusivamente en tu dispositivo. WhatsReply no tiene servidores propios ni envía datos a la nube.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>¿Funciona con WhatsApp Business?</h4>
+        <p><strong>Sí.</strong> La App puede detectar y responder tanto a WhatsApp normal como a WhatsApp Business. Puedes activar o desactivar la respuesta para cada aplicación por separado en la configuración de la App.</p>
+      </div>
+
+      <h2 id="contacto">Contacto</h2>
+      <p>Si necesitas más ayuda o tienes alguna pregunta, no dudes en escribirnos a: <strong>[correo de contacto — completar]</strong></p>
+
+      <div class="cta-card reveal">
+        <h2>¿Necesitas más ayuda?</h2>
+        <p>Revisa nuestra política de privacidad o vuelve al inicio para conocer todas las funciones.</p>
+        <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+          <a href="privacidad.html" class="btn-cta-light">Ver Política de Privacidad</a>
+          <a href="index.html" class="btn-cta-light" style="background:rgba(255,255,255,0.15);color:#fff;">Volver al inicio</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <span class="f-icon">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 11L12 14L22 4" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M21 12V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span>WhatsReply</span>
+    </div>
+    <div class="footer-links">
+      <a href="privacidad.html">Privacidad</a>
+      <a href="ayuda.html">Ayuda</a>
+      <a href="#">Google Play</a>
+    </div>
+    <div class="footer-copy">© 2026 WhatsReply. Todos los derechos reservados.</div>
+  </div>
+</footer>
+
+<script>
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  revealEls.forEach(el => io.observe(el));
+
+  // Active sidebar link on scroll
+  const sections = document.querySelectorAll('.main-content h2[id]');
+  const sidebarLinks = document.querySelectorAll('.sidebar-link');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      if (scrollY >= sectionTop - 140) current = section.getAttribute('id');
+    });
+    sidebarLinks.forEach(link => {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+    });
+  });
+</script>
+
+</body>
+</html>
